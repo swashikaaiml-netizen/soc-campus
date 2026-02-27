@@ -1,17 +1,29 @@
 ==================================================
       CAMPUS SECURITY INCIDENT REPORT
 ==================================================
-Generated at: 2026-02-27 13:00:00
-Total Incidents Detected: 2
+Generated at: 2026-02-27 15:19:02
+Total Incidents Detected: 6
 ==================================================
 
 
 --- CRITICAL SEVERITY INCIDENTS ---
 [2026-02-26T10:12:00Z] Data Exfiltration
-Details: Abnormal data transfer of 500MB downloading student_records.csv by staff1.
+Details: 500MB downloaded (student_records.csv) by staff1.
+------------------------------
+[2026-02-26T10:15:40Z] External Data Upload
+Details: 620MB uploaded to external host 203.190.45.12 by staff1.
 ------------------------------
 
 --- HIGH SEVERITY INCIDENTS ---
+[2026-02-26T10:05:01Z] External IP Activity
+Details: Login or activity detected from external IP 203.190.45.12 by user admin1.
+------------------------------
+[2026-02-26T10:05:05Z] External IP Activity
+Details: Login or activity detected from external IP 203.190.45.12 by user admin2.
+------------------------------
+[2026-02-26T10:05:09Z] External IP Activity
+Details: Login or activity detected from external IP 203.190.45.12 by user admin2.
+------------------------------
 [2026-02-26T10:13:20Z] Data Exfiltration
-Details: Abnormal data transfer of 120MB downloading faculty_salary.xlsx by staff1.
+Details: 120MB downloaded (faculty_salary.xlsx) by staff1.
 ------------------------------

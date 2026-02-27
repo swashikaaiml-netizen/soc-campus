@@ -1,5 +1,5 @@
 {
-  "failed_login_limit": 1,
-  "large_download_threshold": 101,
+  "failed_login_limit": 7,
+  "large_download_threshold": 103,
   "data_upload_threshold": 500
 }

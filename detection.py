@@ -44,87 +44,89 @@ def is_outside_working_hours(timestamp_str):
 
 def analyze_logs(logs):
     """
-    Iterates through each log entry and looks for security anomalies.
-    Categorizes them by Low, Medium, High, or Critical severity.
+    Improved threat detection logic.
+    - Tracks brute force per (IP + user)
+    - Detects large data downloads
+    - Detects large external data uploads (exfiltration)
+    - Flags suspicious external IP activity
     """
-    failed_logins = defaultdict(int) # A dictionary to keep track of failed logins per IP address
-    incidents = []                   # A list to store the security incidents we detect
 
-    # Loop through every log entry in the JSON file
+    failed_logins = defaultdict(int)
+    incidents = []
+
     for log in logs:
-        # Extract the necessary information from the log
         event_type = log.get("event_type")
         ip = log.get("ip_address")
         user = log.get("user_id")
         timestamp = log.get("timestamp")
 
         # ---------------------------------------------------------
-        # 1. Detect login attempts outside working hours (Low/Medium)
+        # 1. Detect Suspicious External IP Activity (High)
         # ---------------------------------------------------------
-        if event_type == "login_attempt" and is_outside_working_hours(timestamp):
-            # If the login failed, mark it Medium. If it was successful, mark it Low.
-            severity = "Medium" if log.get("status") == "failed" else "Low"
-            
-            # Record the incident
-            incidents.append({
-                "timestamp": timestamp,
-                "severity": severity,
-                "type": "Off-Hours Login",
-                "description": f"Login attempt by {user} from {ip} outside working hours."
-            })
-
-        # ---------------------------------------------------------
-        # 2. Detect suspicious IP addresses (High)
-        # ---------------------------------------------------------
-        if ip in SUSPICIOUS_IPS:
+        if ip and not ip.startswith("192.168."):
             incidents.append({
                 "timestamp": timestamp,
                 "severity": "High",
-                "type": "Suspicious IP Activity",
-                "description": f"Activity detected from known suspicious IP {ip}."
+                "type": "External IP Activity",
+                "description": f"Login or activity detected from external IP {ip} by user {user}."
             })
 
         # ---------------------------------------------------------
-        # 3. Detect brute force logins (Critical)
+        # 2. Detect Brute Force Attacks (Critical)
+        #    Track per (IP + user)
         # ---------------------------------------------------------
         if event_type == "login_attempt":
+            key = (ip, user)
+
             if log.get("status") == "failed":
-                # Increment the failed login counter for this specific IP address
-                failed_logins[ip] += 1
-                
-                # If they hit the threshold (e.g., 3 failed attempts), flag it
-                if failed_logins[ip] >= FAILED_LOGIN_THRESHOLD:
+                failed_logins[key] += 1
+
+                if failed_logins[key] >= FAILED_LOGIN_THRESHOLD:
                     incidents.append({
                         "timestamp": timestamp,
                         "severity": "Critical",
                         "type": "Brute Force Attack",
-                        "description": f"Multiple failed login attempts ({failed_logins[ip]}) from {ip} targeting {user}."
+                        "description": f"{failed_logins[key]} failed login attempts from {ip} targeting {user}."
                     })
+
             elif log.get("status") == "success":
-                # If they successfully log in, reset the counter
-                failed_logins[ip] = 0
+                failed_logins[key] = 0
 
         # ---------------------------------------------------------
-        # 4. Detect abnormal data transfer/exfiltration (High/Critical)
+        # 3. Detect Large Data Download (High / Critical)
         # ---------------------------------------------------------
         if event_type == "data_download":
             size = log.get("size_mb", 0)
-            
+            resource = log.get("resource")
+
             if size > LARGE_DOWNLOAD_THRESHOLD_MB:
-                resource = log.get("resource")
-                
-                # If the download size is twice the threshold (e.g., > 200MB), make it Critical
                 severity = "Critical" if size > LARGE_DOWNLOAD_THRESHOLD_MB * 2 else "High"
-                
+
                 incidents.append({
                     "timestamp": timestamp,
                     "severity": severity,
                     "type": "Data Exfiltration",
-                    "description": f"Abnormal data transfer of {size}MB downloading {resource} by {user}."
+                    "description": f"{size}MB downloaded ({resource}) by {user}."
                 })
 
-    return incidents
+        # ---------------------------------------------------------
+        # 4. Detect Large External Data Upload (Critical)
+        # ---------------------------------------------------------
+        if event_type == "data_upload":
+            size = log.get("size_mb", 0)
+            destination_ip = log.get("destination_ip")
 
+            if destination_ip and not destination_ip.startswith("192.168."):
+                if size > LARGE_DOWNLOAD_THRESHOLD_MB:
+                    incidents.append({
+                        "timestamp": timestamp,
+                        "severity": "Critical",
+                        "type": "External Data Upload",
+                        "description": f"{size}MB uploaded to external host {destination_ip} by {user}."
+                    })
+
+    return incidents
+        
 # ==========================================
 # AUTOMATED INCIDENT REPORT GENERATION
 # ==========================================
