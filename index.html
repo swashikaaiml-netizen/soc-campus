@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Security SOC Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- Boxicons for icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="background-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <nav class="sidebar">
+        <div class="logo">
+            <i class='bx bx-shield-quarter'></i>
+            <span>SOC_Campus</span>
+        </div>
+        <ul class="nav-links">
+            <li class="active" id="nav-dashboard"><a href="#"><i class='bx bx-grid-alt'></i> Dashboard</a></li>
+            <li id="nav-live"><a href="#"><i class='bx bx-radar'></i> Live Monitor</a></li>
+            <li id="nav-reports"><a href="#"><i class='bx bx-file'></i> Reports</a></li>
+            <li id="nav-settings"><a href="#"><i class='bx bx-cog'></i> Settings</a></li>
+        </ul>
+        <div class="system-status">
+            <div class="status-indicator active"></div>
+            <span>System Armed</span>
+        </div>
+    </nav>
+
+    <main class="content">
+        <header>
+            <div>
+                <h1>Security Overview</h1>
+                <p class="subtitle">AI-Driven Threat Detection & Incident Response</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="refreshData()"><i class='bx bx-refresh'></i> Refresh
+                    Data</button>
+            </div>
+        </header>
+
+        <!-- Dashboard View (Default) -->
+        <div id="view-dashboard" class="content-view active">
+            <section class="metrics-grid">
+                <div class="metric-card glass">
+                    <div class="metric-icon primary"><i class='bx bx-user-check'></i></div>
+                    <div class="metric-info">
+                        <h3>Total Logins</h3>
+                        <p id="totalLogins">--</p>
+                    </div>
+                </div>
+                <div class="metric-card glass">
+                    <div class="metric-icon warning"><i class='bx bx-error-alt'></i></div>
+                    <div class="metric-info">
+                        <h3>Failed Attempts</h3>
+                        <p id="failedAttempts">--</p>
+                    </div>
+                </div>
+                <div class="metric-card glass">
+                    <div class="metric-icon danger"><i class='bx bx-shield-x'></i></div>
+                    <div class="metric-info">
+                        <h3>Critical Alerts</h3>
+                        <p id="criticalAlerts">--</p>
+                    </div>
+                </div>
+                <div class="metric-card glass">
+                    <div class="metric-icon info"><i class='bx bx-data'></i></div>
+                    <div class="metric-info">
+                        <h3>Data Exfiltration</h3>
+                        <p id="dataDownloads">--</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dashboard-main-grid" style="margin-top: 2rem;">
+                <section class="recent-logs glass">
+                    <div class="section-header">
+                        <h2>Live Activity Stream</h2>
+                        <span class="badge">logs.json</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="logsTable">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Event Type</th>
+                                    <th>User ID</th>
+                                    <th>IP Address</th>
+                                    <th>Status / Info</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logsBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="detected-threats glass">
+                    <div class="section-header">
+                        <h2>Automated Threat Response</h2>
+                        <span class="badge danger">AI Active</span>
+                    </div>
+                    <div class="threat-feed" id="threatFeed">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Placeholder Views (Hidden by default) -->
+        <div id="view-live" class="content-view" style="display: none;">
+            <div class="glass" style="padding: 2rem;">
+                <div class="section-header">
+                    <h2><i class='bx bx-radar'></i> Network Traffic Radar</h2>
+                    <div class="header-actions" style="display: flex; gap: 10px; align-items: center;">
+                        <span id="refresh-indicator" style="font-size: 0.8rem; color: var(--text-muted);">Auto-refresh:
+                            5s</span>
+                        <button class="btn btn-primary" onclick="refreshLiveMonitor()"><i class='bx bx-refresh'></i>
+                            Force Refresh</button>
+                    </div>
+                </div>
+
+                <div class="live-monitor-grid"
+                    style="display: grid; grid-template-columns: 3fr 1fr; gap: 2rem; margin-top: 1.5rem;">
+                    <div class="live-logs-container glass"
+                        style="padding: 1.5rem; max-height: 600px; overflow-y: auto;">
+                        <h3>Real-time Log Stream</h3>
+                        <table style="width: 100%; margin-top: 1rem;">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Event</th>
+                                    <th>Source IP</th>
+                                    <th>User</th>
+                                    <th>Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="liveLogsBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="alert-console glass" style="padding: 1.5rem; max-height: 600px; overflow-y: auto;">
+                        <h3 style="color: var(--danger);"><i class='bx bx-error-circle'></i> Alert Console</h3>
+                        <div id="liveAlertsFeed"
+                            style="margin-top: 1rem; display: flex; flex-direction: column; gap: 10px;">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-reports" class="content-view" style="display: none;">
+            <div class="glass" style="padding: 2rem;">
+                <div class="section-header">
+                    <h2>Generated Security Reports</h2>
+                    <button class="btn btn-primary" onclick="loadReport()"><i class='bx bx-download'></i> Refresh
+                        Report</button>
+                </div>
+                <div class="report-container glass"
+                    style="background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 12px; margin-top: 1rem; overflow: auto; max-height: 500px;">
+                    <pre id="reportContent"
+                        style="font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #a3a3bd; line-height: 1.5; white-space: pre-wrap;">Click 'Refresh Report' to load the latest incident summary...</pre>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-settings" class="content-view" style="display: none;">
+            <div class="glass" style="padding: 2rem;">
+                <div class="section-header">
+                    <h2><i class='bx bx-cog'></i> Security System Configuration</h2>
+                </div>
+
+                <div class="settings-container glass" style="max-width: 600px; margin-top: 2rem; padding: 2rem;">
+                    <form id="settingsForm" onsubmit="event.preventDefault(); saveSettings();">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Failed Login
+                                Attempt Limit (CRITICAL Alert)</label>
+                            <input type="number" id="failed_login_limit" class="glass"
+                                style="width: 100%; padding: 0.8rem; border: 1px solid rgba(255,255,255,0.1); color: white; background: rgba(255,255,255,0.05); border-radius: 8px;"
+                                min="1" required>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Large
+                                Download Threshold (MB - HIGH Alert)</label>
+                            <input type="number" id="large_download_threshold" class="glass"
+                                style="width: 100%; padding: 0.8rem; border: 1px solid rgba(255,255,255,0.1); color: white; background: rgba(255,255,255,0.05); border-radius: 8px;"
+                                min="1" required>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">External
+                                Data Upload Threshold (MB - CRITICAL Alert)</label>
+                            <input type="number" id="data_upload_threshold" class="glass"
+                                style="width: 100%; padding: 0.8rem; border: 1px solid rgba(255,255,255,0.1); color: white; background: rgba(255,255,255,0.05); border-radius: 8px;"
+                                min="1" required>
+                        </div>
+
+                        <div id="settingsMsg"
+                            style="margin-bottom: 1.5rem; font-size: 0.9rem; padding: 0.8rem; border-radius: 8px; display: none;">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+                            <i class='bx bx-save'></i> Save Configuration
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

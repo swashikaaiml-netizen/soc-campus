@@ -1,0 +1,83 @@
+[
+  {
+    "timestamp": "2026-02-26T09:50:10Z",
+    "event_type": "login_attempt",
+    "user_id": "student1",
+    "ip_address": "192.168.20.10",
+    "status": "success"
+  },
+  {
+    "timestamp": "2026-02-26T09:55:22Z",
+    "event_type": "data_download",
+    "user_id": "student1",
+    "ip_address": "192.168.20.10",
+    "resource": "exam_schedule.pdf",
+    "size_mb": 2
+  },
+  {
+    "timestamp": "2026-02-26T10:05:01Z",
+    "event_type": "login_attempt",
+    "user_id": "admin1",
+    "ip_address": "203.190.45.12",
+    "status": "failed"
+  },
+  {
+    "timestamp": "2026-02-26T10:05:05Z",
+    "event_type": "login_attempt",
+    "user_id": "admin2",
+    "ip_address": "203.190.45.12",
+    "status": "failed"
+  },
+  {
+    "timestamp": "2026-02-26T10:05:09Z",
+    "event_type": "login_attempt",
+    "user_id": "admin2",
+    "ip_address": "203.190.45.12",
+    "status": "success"
+  },
+  {
+    "timestamp": "2026-02-26T10:07:30Z",
+    "event_type": "privilege_escalation",
+    "user_id": "admin2",
+    "ip_address": "192.168.10.11",
+    "status": "success"
+  },
+  {
+    "timestamp": "2026-02-26T10:10:15Z",
+    "event_type": "login_attempt",
+    "user_id": "staff1",
+    "ip_address": "192.168.30.10",
+    "status": "success"
+  },
+  {
+    "timestamp": "2026-02-26T10:12:00Z",
+    "event_type": "data_download",
+    "user_id": "staff1",
+    "ip_address": "192.168.30.10",
+    "resource": "student_records.csv",
+    "size_mb": 500
+  },
+  {
+    "timestamp": "2026-02-26T10:13:20Z",
+    "event_type": "data_download",
+    "user_id": "staff1",
+    "ip_address": "192.168.30.10",
+    "resource": "faculty_salary.xlsx",
+    "size_mb": 120
+  },
+  {
+    "timestamp": "2026-02-26T10:15:40Z",
+    "event_type": "data_upload",
+    "user_id": "staff1",
+    "ip_address": "192.168.30.10",
+    "destination_ip": "203.190.45.12",
+    "size_mb": 620
+  },
+
+  {
+    "timestamp": "2026-02-26T10:17:00Z",
+    "event_type": "logout",
+    "user_id": "staff1",
+    "ip_address": "192.168.30.10"
+  }
+]

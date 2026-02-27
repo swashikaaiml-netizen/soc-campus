@@ -1,0 +1,17 @@
+==================================================
+      CAMPUS SECURITY INCIDENT REPORT
+==================================================
+Generated at: 2026-02-27 13:00:00
+Total Incidents Detected: 2
+==================================================
+
+
+--- CRITICAL SEVERITY INCIDENTS ---
+[2026-02-26T10:12:00Z] Data Exfiltration
+Details: Abnormal data transfer of 500MB downloading student_records.csv by staff1.
+------------------------------
+
+--- HIGH SEVERITY INCIDENTS ---
+[2026-02-26T10:13:20Z] Data Exfiltration
+Details: Abnormal data transfer of 120MB downloading faculty_salary.xlsx by staff1.
+------------------------------
