@@ -131,7 +131,7 @@ async function fetchLogs() {
 
 async function fetchAlerts() {
     try {
-        const response = await fetch('/api/alerts');
+        const response = await fetch('./alerts.json');
         if (!response.ok) throw new Error("Could not load alerts from API");
         return await response.json();
     } catch (error) {
